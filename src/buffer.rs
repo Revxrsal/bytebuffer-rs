@@ -167,6 +167,18 @@ impl ByteBuffer {
         self.data.is_empty()
     }
 
+    pub fn advance(&mut self, cnt: usize) {
+        self.data = self.data.split_off(cnt);
+    }
+
+    pub fn remaining(&self) -> usize {
+        self.data.len() - self.rpos
+    }
+
+    pub fn has_remaining(&self) -> bool {
+        self.remaining() > 0
+    }
+
     /// Clear the buffer and reinitialize the reading and writing cursors
     pub fn clear(&mut self) {
         self.data.clear();
