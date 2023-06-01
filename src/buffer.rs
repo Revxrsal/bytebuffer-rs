@@ -40,6 +40,18 @@ impl Default for ByteBuffer {
     }
 }
 
+impl AsMut<[u8]> for ByteBuffer {
+    fn as_mut(&mut self) -> &mut [u8] {
+        self.data.as_mut_slice()
+    }
+}
+
+impl AsRef<[u8]> for ByteBuffer {
+    fn as_ref(&self) -> &[u8] {
+        self.data.as_ref()
+    }
+}
+
 impl Read for ByteBuffer {
     fn read(&mut self, buf: &mut [u8]) -> Result<usize> {
         self.flush_bits();
@@ -124,6 +136,12 @@ impl ByteBuffer {
         let mut buffer = ByteBuffer::new();
         buffer.write_bytes(bytes);
         buffer
+    }
+
+    /// Constructs a new ByteBuffer with the given capacity
+    /// pre-allocated
+    pub fn with_capacity(capacity: usize) -> ByteBuffer {
+        ByteBuffer::from_vec(Vec::with_capacity(capacity))
     }
 
     /// Constructs a new ByteBuffer from an existing vector. This
@@ -549,8 +567,8 @@ impl ByteBuffer {
 
     /// Return the raw byte buffer as a Vec<u8>.
     #[deprecated(
-        since = "2.1.0",
-        note = "use `as_bytes().to_vec()` or `into_vec()` instead"
+    since = "2.1.0",
+    note = "use `as_bytes().to_vec()` or `into_vec()` instead"
     )]
     pub fn into_bytes(&self) -> Vec<u8> {
         self.data.to_vec()
